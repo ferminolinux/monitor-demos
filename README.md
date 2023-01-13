@@ -2,9 +2,12 @@
 
 Um exemplo simples de monitoramento de uma aplicação python usando prometheus, grafana e o alertmanager tudo de modo containerizado.
 
-## Execução
+## Atenção
 
-### Atenção
+---
+Algumas coisas precisam ser ajustadas para executar teste projeto, essas questões serão detalhadas abaixo:
+
+### AlertManager
 
 Antes de tentar executar esse projeto, certifique-se de alterar os valores das propriedades  **slack_api_url** e **channel** para:&nbsp;sua url do slack e o nome do seu canal respectivamente.
 
@@ -33,6 +36,14 @@ receivers:
 
 ```
 
+### Grafana
+
+Para visualizar o dashboard do grafana será necessário importa-lo, o JSON que contém as informações para isso está presente no diretório 'dashboard'.  
+
+## Execução
+
+---
+
 ### Docker
 
 Para executar com o docker você pode utilizar o docker-compose juntamente com o arquivo docker-compose.yaml presente neste repositório, através do comando:
@@ -42,6 +53,7 @@ docker compose up
 ```
 
 ### Podman
+
 Caso você utilize o podman e queira executar este projeto a maneira mais simples de faze-lo é através do uso de pods, dessa forma você pode agrupar e gerenciar todos os containers  de uma vez(como faria com o docker-compose).
 Para criar o pod execute o script **'podcreate.sh'**.
 
@@ -58,7 +70,7 @@ podman pod start monitor
 podman pod stop monitor
 # Remove o pod monitor
 podman pod rm monitor
-# Reinicia o pod monitor
+# Reinicia o pod monitor para aplicar novas configurações
 podman pod kill --signal=SIGHUP monitor
 ```
 
