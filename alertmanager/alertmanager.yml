@@ -13,7 +13,7 @@ receivers:
 - name: 'slack-notifications'
   slack_configs:
   - send_resolved: true
-    channel: 'prometheus-python-app'
+    channel: 'your-slack-channel'
     icon_url: 'https://avatars3.githubusercontent.com/u/3380462'
     username: 'AlertManager'
     title: '[ {{ .Status | toUpper }}] {{ .CommonLabels.alertname }}'
