@@ -1,0 +1,76 @@
+groups:
+  - name: python-app
+    rules:
+    ##
+    ## Os alertas foram divididos em 3 níveis de severidade, descritos a seguir
+    ##
+    ## Warning:
+    ##  É algo que precisa de atenção, ams não é um problema que causa prejuízos
+    ##  ao funcionamento da aplicação mas pode evoluir para algo assim. 
+    ##
+    ## Danger:
+    ##  É algo perigoso pode significar problemas no fluxo de trabalho da aplicação
+    ##  que se não solucionado pode evoluir para algo que interrompa o seu funcionamento.
+    ##
+    ## Critical:
+    ##  Algo que interrompe a execução da aplicação.
+    ##
+    ##
+    ##
+    ## Severidade: Warning
+
+    # A latência média entre requisições está entre 1 e 2 segundos
+    - alert: AppLatencyBetween1and2
+      expr: 1 < job:http_request_latency:rate5m < 2
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: '{{ $labels.job }} latency between one and two seconds'
+        description: 'Atenção, a latência entre as requisições está entre 1 e 2 segundos'
+
+    # A quantidade média de requisições simultaneas ultrapassou  5
+    - alert: ManyRequestsForResponse
+      expr: floor(avg_over_time(http_request_in_progress[5m])) > 5
+      for: 1m
+      labels:
+        severity: warning  
+      annotations:
+        summary: '{{ $labels.job }} processing many requests'
+        description: 'Atenção, estão sendo realizadas mais de 5 requisições simultaneamente'
+
+    ## Severidade: Danger
+
+    # A quantidade de exceções é maior que a quantidade de requisições atendidas
+    - alert: MoreExceptionsThenSuccess
+      expr: sum(http_requests_total) < http_exceptions_total
+      for: 1m
+      labels:    
+        severity: danger
+      annotations:
+        summary: '{{ $labels.job }} response more exceptions then success'
+        description: 'Perigo, a aplicação está respondendo mais erros do que requisições bem sucedidas'
+
+    # A latência média entre requisições ultrapassou o limite imaginário de 2s
+    - alert: AppLatencyAbove2sec
+      expr: job:http_request_latency:rate5m >= 2
+      for: 5m
+      labels:
+        severity: danger
+      annotations:
+        summary: '{{ $labels.job }} latency above two seconds'
+        description: 'Perigo, a latência entre as requisições ultrapassou 2 segundos'
+
+    ## Severidade: Critical
+
+    # Aplicação caiu
+    - alert: InstanceIsDown
+      expr: up{instance="jjba:5000"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: '{{ $labels.job }} app down'
+        description: 'Erro, a aplicação não está em execução por pelo menos 5 minutos'
+
+
