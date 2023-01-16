@@ -5,7 +5,7 @@ Um exemplo simples de monitoramento de uma aplicação python usando prometheus,
 ## Atenção
 
 ---
-Algumas coisas precisam ser ajustadas para executar teste projeto, essas questões serão detalhadas abaixo:
+Algumas coisas precisam ser ajustadas para executar testes neste projeto, essas questões serão detalhadas abaixo:
 
 ### AlertManager
 
@@ -55,10 +55,53 @@ docker compose up
 ### Podman
 
 Caso você utilize o podman e queira executar este projeto a maneira mais simples de faze-lo é através do uso de pods, dessa forma você pode agrupar e gerenciar todos os containers  de uma vez(como faria com o docker-compose).
-Para criar o pod execute o script **'podcreate.sh'**.
 
+
+Vamos começar criando a rede para isso
 ```bash
-./podcreate.sh
+podman network create monitor
+```
+
+Em seguida criamos o nosso pod
+```bash
+podman pod create monitor
+```
+
+Agora vamos criar os containers, lembrando que containers que vão alterar arquivos do host através dos volumes do tipo 'bind' precisam ter acesso privilegiado, para isso adicione a opção '--privileged'.
+```bash
+# container da aplicação
+podman create --name jjba -i \
+  -p 8080:5000 \
+  -e "REQUEST_LATENCY=0" \
+  --network monitor \
+  --pod monitor \
+  ghcr.io/ferminolinux/jojoba:latest
+
+# container do prometheus
+podman create --name prometheus -i \
+  -p 9090:9090 \
+  --network monitor \
+  --pod monitor \
+  --privileged \
+  --mount type=bind,src=prometheus/prometheus.yml,dst=/usr/local/etc/prometheus/prometheus.yml \
+  --mount type=bind,src=prometheus/rules/,dst=/usr/local/etc/prometheus/rules/ \
+  ghcr.io/ferminolinux/prometheus:latest
+
+# container do alertmanager
+podman create --name alertmanager -i \
+  -p 9093:9093 \
+  --network monitor \
+  --pod monitor \
+  --privileged \
+  --mount type=bind,src=alertmanager/alertmanager.yml,dst=/usr/local/etc/alertmanager/alertmanager.yml \
+  ghcr.io/ferminolinux/alertmanager:latest
+
+# container do grafana
+podman create --name grafana -i \
+  -p 3000:3000 \
+  --network monitor \
+  --pod monitor \
+  docker.io/grafana/grafana:latest
 ```
 
 Após a execução do script você pode gerenciar os containers através do pod com o comando 'podman pod'.
