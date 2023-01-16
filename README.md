@@ -104,14 +104,14 @@ podman create --name grafana -i \
   docker.io/grafana/grafana:latest
 ```
 
-Após a execução do script você pode gerenciar os containers através do pod com o comando 'podman pod'.
+Após a execução dos comandos acima você pode gerenciar os containers através do pod com o comando 'podman pod'.
 
 ```bash
 # Inicia o pod monitor
 podman pod start monitor
 # Para o pod monitor
 podman pod stop monitor
-# Remove o pod monitor
+# Remove o pod monitor 
 podman pod rm monitor
 # Reinicia o pod monitor para aplicar novas configurações
 podman pod kill --signal=SIGHUP monitor
