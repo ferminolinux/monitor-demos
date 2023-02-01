@@ -1,0 +1,39 @@
+name: monitor
+services:
+  jjba:
+    image: ghcr.io/ferminolinux/jojoba:latest
+    ports:
+      - 8080:5000
+    environment:
+      REQUEST_LATENCY: 1
+    networks:
+      - monitor
+
+  prometheus:
+    image: ghcr.io/ferminolinux/prometheus:latest
+    ports:
+      - 9090:9090
+    networks:
+      - monitor
+    volumes:
+      - ./prometheus/prometheus.yml:/usr/local/etc/prometheus/prometheus.yml
+      - ./prometheus/rules/:/usr/local/etc/prometheus/rules/
+
+  alertmanager:
+    image: ghcr.io/ferminolinux/alertmanager:latest
+    ports:
+      - 9093:9093
+    networks:
+      - monitor
+    volumes:
+      - ./alertmanager/alertmanager.yml:/usr/local/etc/alertmanager/alertmanager.yml
+
+  grafana:
+    image: docker.io/grafana/grafana:latest
+    ports:
+      - 3000:3000
+    networks:
+      - monitor
+
+networks:
+  monitor: null

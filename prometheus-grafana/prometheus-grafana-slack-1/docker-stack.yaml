@@ -1,0 +1,88 @@
+version: '3.9'
+services:
+  jjba:
+    image: ghcr.io/ferminolinux/jojoba:latest
+    ports:
+      - 80:5000
+    environment:
+      REQUEST_LATENCY: 2
+    networks:
+      - app
+      - monitor
+
+  prometheus:
+    image: ghcr.io/ferminolinux/prometheus:latest
+    ports:
+      - 9090:9090
+    networks:
+      - monitor
+    volumes:
+      - prometheus:/prometheus
+    configs:
+      - source: prometheus
+        target: /usr/local/etc/prometheus/prometheus.yml
+        uid: "1000"
+        gid: "1000"
+        mode: 0644
+      
+      - source: alerting-rules
+        target: /usr/local/etc/prometheus/rules/alerting-rules.yaml
+        uid:  "1000"
+        gid: "1000"
+        mode: 0644
+
+      - source: recording-rules
+        target: /usr/local/etc/prometheus/rules/recording-rules.yaml
+        uid: "1000"
+        gid: "1000"
+        mode: 0644
+
+  alertmanager:
+    image: ghcr.io/ferminolinux/alertmanager:latest
+    ports:
+      - 9093:9093
+    networks:
+      - monitor
+    volumes:
+      - alertmanager:/alertmanager
+    configs:
+      - source: alertmanager
+        target: /usr/local/etc/alertmanager/alertmanager.yml
+    
+  
+  grafana:
+    image: docker.io/grafana/grafana:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - monitor
+
+volumes:
+    prometheus:
+    grafana:
+    alertmanager:
+
+networks:
+  app:
+  monitor:
+
+configs:
+  prometheus:
+    external: true
+  alerting-rules:
+    external: true
+  recording-rules:
+    external: true
+  alertmanager:
+    external: true
+  
+
+  
+
+      
+    
+  
+
+    
