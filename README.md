@@ -1,2 +1,2 @@
 # Argos
-Projetos de monitoramento envolvendo Prometheus e Grafana
+Projetos de monitoramento para estudos envolvendo Prometheus e Grafana
