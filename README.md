@@ -1,6 +1,6 @@
 # prometheus-grafana-example
 
-Um exemplo simples de monitoramento de uma aplicação python usando prometheus, grafana e o alertmanager(entregando alertas no Slack) tudo de modo containerzizado.
+Um exemplo simples de monitoramento de uma aplicação python usando prometheus, grafana e o alertmanager(entregando alertas no Slack) tudo atrav.
 
 ## Atenção
 
