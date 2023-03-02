@@ -1,13 +1,13 @@
 groups:
   - name: python-app
     rules: 
-    # Total de requisições em todos os endpoints
+    # Total requests across all endpoints
     - record: job:http_requests_total:sum
       expr: sum(http_requests_total) by (app_name)
-    # Taxa de requisições por segundo feitas durante os últimos 5m
+    # Rate of requests per second made during the last 5m
     - record: job:http_requests_total:sum_rate5m
       expr: sum(rate(http_requests_total[5m])) by (app_name)
-    # Média do tempo de latencia entre as requisições durante os últimos 5m
+    # Average latency time between requests over the last 5m
     - record: job:http_request_latency:rate5m
       expr: rate(http_request_latency_sum[5m]) / rate(http_request_latency_count[5m])
 
