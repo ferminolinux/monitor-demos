@@ -1,2 +1,2 @@
-# Argos
-Projetos de monitoramento para estudos envolvendo Prometheus e Grafana
+# monitor-demos
+Monitoring demos

@@ -1,5 +1,4 @@
 global:
-  # Opções globais para todos os receivers do slack
   slack_api_url: 'your_slack_url'
   resolve_timeout: 2m
 
